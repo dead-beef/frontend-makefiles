@@ -5,6 +5,10 @@ ifeq "$(CONFIG_FILE)" ""
 CONFIG_FILE := config/app.mk
 endif
 
+ifeq "$(OVERRIDE_CONFIG_FILE)" ""
+OVERRIDE_CONFIG_FILE := config/override.js
+endif
+
 BUILD_DIR = build
 MIN_DIR := $(BUILD_DIR)/min
 DIST_DIR = dist
@@ -27,7 +31,7 @@ MODULE_PATH := $(shell $(NODE) -e 'console.log(module.paths.join(" "))')
 -include $(VARS_FILE)
 
 ifneq "$(MAKECMDGOALS)" "install"
-$(VARS_FILE): package.json $(MAKEFILE_DIR)/js/make-vars.js config/override.js | $(BUILD_DIR) $(MODULE_DIRS)
+$(VARS_FILE): package.json $(MAKEFILE_DIR)/js/make-vars.js $(OVERRIDE_CONFIG_FILE) | $(BUILD_DIR) $(MODULE_DIRS)
 	$(call prefix,vars,$(MAKE_VARS_CMD) >$@.tmp)
 	$(call prefix,vars,$(MV) $@.tmp $@)
 endif
