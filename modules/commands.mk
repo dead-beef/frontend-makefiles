@@ -25,9 +25,9 @@ STOP = pkill -f http-server
 TEST = karma start config/karma.conf.js --single-run
 TEST_WATCH = karma start config/karma.conf.js
 TEST_E2E = ./e2e-test
+MAKE_VARS = $(MAKEFILE_DIR)/bin/make-vars
+MAKE_VARS_CMD = $(MAKE_VARS) $(OVERRIDE_CONFIG_FILE)
 
-MAKE_VARS = $(MAKEFILE_DIR)/js/make-vars.js
-MAKE_VARS_CMD = $(NODE) $(MAKE_VARS) $(OVERRIDE_CONFIG_FILE)
 
 #VER := $(shell ver)
 #ifeq "$(findstring Windows, $(VER))" "Windows"
