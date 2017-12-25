@@ -1,40 +1,34 @@
-APP_CSS =
-VARS += SCSS_FILES SCSS_DIRS SCSS_DEPS \
-        SCSS_INCLUDE_PATH APP_CSS APP_MIN_CSS
+SCSS_INCLUDE_PATH := $(call join-with,:,$(MODULE_PATH))
 
-SCSS_DEPS := $(SCSS_FILES) $(foreach d,$(CSSS_DIRS),\
-                                     $(call rwildcards,$d/,*.css *.scss))
-SCSS_DEPS := $(filter-out $(LIB_SCSS_FILES) $(LIB_SCSS_DEPS),$(SCSS_DEPS))
-SCSS_INCLUDE_PATH := $(call join-with,:,\
-                            $(SCSS_DIRS) $(MODULE_DIRS) $(MODULE_PATH))
+# $(call SCSS_BUILD, input_scss, output_css)
+SCSS_BUILD = node-sass --include-path $(SCSS_INCLUDE_PATH) $1 >$2.tmp \
+             && $(MV) $2.tmp $2
+# $(call SCSS_MAKEDEPEND, input_scss, output_dir, output_deps)
+SCSS_MAKEDEPEND = $(MAKEFILE_DIR)/../../sass-makedepend/bin/sass-makedepend \
+                  -I $(SCSS_INCLUDE_PATH) -i /node_modules/ -r \
+                  -p $(2)/ $(1) >$(3).tmp \
+                  && $(MV) $(3).tmp $(3)
 
-ifneq "$(strip $(SCSS_FILES))" ""
-APP_CSS := $(BUILD_DIR)/$(APP_NAME).css
-APP_OUT_DIR += $(APP_OUT_CSS_DIR)
-BUILD_FILES += $(APP_CSS)
+# $(call add-scss-include-path, paths)
+define add-scss-include-path
+$(eval SCSS_INCLUDE_PATH := $(call join-with,:,$(1) $(SCSS_INCLUDE_PATH)))
+endef
 
-TARGETS += copy-app-css copy-app-min-css
+define do-build-scss
+$(eval _distfile := $2/$(notdir $1))
+$(eval _distfile := $(_distfile:%.scss=%.css))
+$(eval _distfile := $(_distfile:%.sass=%.css))
 
-ifneq "$(strip $(LIBRARY))" ""
-APP_MIN_CSS := $(APP_CSS:%.css=%.min.css)
-BUILD_FILES += $(APP_MIN_CSS)
+$(eval _dep := $(DEP_DIR)/$(notdir $(1)).d)
 
-all: copy-app-min-css
-else
-APP_MIN_CSS := $(APP_CSS:$(BUILD_DIR)%=$(MIN_DIR)%)
-endif
+$(call mkdirs,$2)
 
-all: copy-app-css
-min: copy-app-min-css
+all min: $(_distfile)
 
-copy-app-css: $(APP_CSS) | $(APP_OUT_CSS_DIR)
-	$(call prefix,dist,$(CPDIST) $(APP_CSS) $(APP_OUT_CSS_DIR))
+$(_distfile): $1 | $2 $(DEP_DIR)
+	$$(call prefix,deps,$$(call SCSS_MAKEDEPEND,$1,$2,$(_dep)))
+	$$(call prefix,scss,$$(call SCSS_BUILD, $$<, $$@))
+endef
 
-copy-app-min-css: $(APP_MIN_CSS) | $(APP_OUT_CSS_DIR)
-	$(call prefix,dist,$(CPDIST) $(APP_MIN_CSS) $(APP_OUT_CSS_DIR))
-
-$(APP_CSS): $(SCSS_DEPS) | $(BUILD_DIR)
-	$(call prefix,scss,$(CAT) $(SCSS_FILES) | $(SASS) >$@.tmp)
-	$(call prefix,scss,$(MV) $@.tmp $@)
-
-endif
+# $(call build-scss, src_file, dist_dir)
+build-scss = $(eval $(call do-build-scss,$1,$2))

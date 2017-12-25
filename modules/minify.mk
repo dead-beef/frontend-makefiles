@@ -1,21 +1,23 @@
-$(MIN_DIR)/%.js: $(BUILD_DIR)/%.js | $(MIN_DIR)
-	$(call prefix,js-min,$(MINJS) $< -c -m >$@.tmp)
-	$(call prefix,js-min,$(MV) $@.tmp $@)
+# $(call MINJS, src_file, dst_file)
+MINJS = uglifyjs $1 -c -m >$2.tmp && $(MV) $2.tmp $2
+# $(call MINJSON, src_file, dst_file)
+MINJSON = $(MAKEFILE_DIR)/bin/min-json $1 >$2.tmp && $(MV) $2.tmp $2
+# $(call MINCSS, src_file, dst_file)
+MINCSS = csso -i $1 -o $2
+# $(call MINHTML, src_file, dst_file)
+MINHTML = html-minifier -c config/html-minifier.conf.json $1 -o $2.tmp \
+          && $(MV) $2.tmp $2
 
-$(BUILD_DIR)/%.min.js: $(BUILD_DIR)/%.js | $(MIN_DIR)
-	$(call prefix,js-min,$(MINJS) $< -c -m >$@.tmp)
-	$(call prefix,js-min,$(MV) $@.tmp $@)
+define do-minify
+$(eval _distdir := $(dir $(strip $2)))
 
-$(MIN_DIR)/%.css: $(BUILD_DIR)/%.css | $(MIN_DIR)
-	$(call prefix,css-min,$(MINCSS) -i $< -o $@)
+$(call mkdirs, $(_distdir))
 
-$(BUILD_DIR)/%.min.css: $(BUILD_DIR)/%.css | $(MIN_DIR)
-	$(call prefix,css-min,$(MINCSS) -i $< -o $@)
+min: $2
 
-$(MIN_DIR)/%.json: $(BUILD_DIR)/%.json | $(MIN_DIR)
-	$(call prefix,json-min,$(MINJSON) $< >$@.tmp)
-	$(call prefix,json-min,$(MV) $@.tmp $@)
+$2: $1 | $(_distdir)
+	$$(call prefix,min,$$(call $3,$1,$2))
+endef
 
-$(MIN_DIR)/%.html: $(BUILD_DIR)/%.html | $(MIN_DIR)
-	$(call prefix,html-min,$(MINHTML) $< -o $@.tmp)
-	$(call prefix,html-min,$(MV) $@.tmp $@)
+# $(call minify, src_file, dst_file, command)
+minify = $(eval $(call do-minify,$1,$2,$3))
