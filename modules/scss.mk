@@ -4,7 +4,7 @@ SCSS_INCLUDE_PATH := $(call join-with,:,$(MODULE_PATH))
 SCSS_BUILD = node-sass --include-path $(SCSS_INCLUDE_PATH) $1 >$2.tmp \
              && $(MV) $2.tmp $2
 # $(call SCSS_MAKEDEPEND, input_scss, output_dir, output_deps)
-SCSS_MAKEDEPEND = $(MAKEFILE_DIR)/../../sass-makedepend/bin/sass-makedepend \
+SCSS_MAKEDEPEND = sass-makedepend \
                   -I $(SCSS_INCLUDE_PATH) -i /node_modules/ -r \
                   -p $(2)/ $(1) >$(3).tmp \
                   && $(MV) $(3).tmp $(3)
