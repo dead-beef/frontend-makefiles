@@ -49,8 +49,3 @@ install:
 	$(call prefix,install,npm install)
 	$(call prefix,install,$(RESET_MAKE) $(VARS_FILE))
 
-start: stop
-	$(call prefix,start,$(START))
-
-stop:
-	$(call prefix,stop,-$(STOP))

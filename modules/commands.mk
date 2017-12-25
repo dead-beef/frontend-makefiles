@@ -19,12 +19,6 @@ MINCSS = csso
 MINHTML = html-minifier -c config/html-minifier.conf.json
 WATCH = chokidar $(WATCH_FILES) -i '**/.*' -c
 
-START = http-server -a $(SERVER_IP) -p $(SERVER_PORT) -c-1 $(DIST_DIR)
-STOP = pkill -f http-server
-
-TEST = karma start config/karma.conf.js --single-run
-TEST_WATCH = karma start config/karma.conf.js
-TEST_E2E = ./e2e-test
 MAKE_VARS = $(MAKEFILE_DIR)/bin/make-vars
 MAKE_VARS_CMD = $(MAKE_VARS) $(OVERRIDE_CONFIG_FILE)
 
