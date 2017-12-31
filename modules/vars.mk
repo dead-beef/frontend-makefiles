@@ -1,6 +1,3 @@
-LINT_ENABLED := 1
-LIBRARY :=
-
 ifeq "$(CONFIG_FILE)" ""
 CONFIG_FILE := config/app.mk
 endif
@@ -13,16 +10,16 @@ BUILD_DIR = build
 DEP_DIR := $(BUILD_DIR)/deps
 MIN_DIR := $(BUILD_DIR)/min
 DIST_DIR = dist
+LINT_ENABLED := 1
 
 TARGETS :=
 NPM_SCRIPTS :=
 LOAD_MODULES :=
-VARS := MODULE_PATH VARS_FILE MAKEFILES BUILD_FILES BUILD_FILES_MIN \
-        DIST_FILES WATCH_FILES TARGETS NPM_SCRIPTS
+VARS := MODULE_PATH VARS_FILE MAKEFILES TARGETS NPM_SCRIPTS
 
 VARS_FILE := $(BUILD_DIR)/vars.mk
-MAKEFILES := Makefile $(VARS_FILE) $(wildcard $(MAKEFILE_PATH)/*.mk)
-WATCH_FILES := 'config/*' '$(MAKEFILE_DIR)/*' Makefile package.json
+MAKEFILES := Makefile $(VARS_FILE) $(wildcard $(MAKEFILE_PATH)/*.mk) \
+             $(CONFIG_FILE)
 MODULE_DIRS := node_modules
 MODULE_PATH := $(shell $(NODE) -e 'console.log(module.paths.join(" "))')
 
