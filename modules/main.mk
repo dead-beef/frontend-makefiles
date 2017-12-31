@@ -1,8 +1,8 @@
-TARGETS += all min watch min-watch start stop \
-           rebuild rebuild-min rebuild-all rebuild-all-min \
+TARGETS += all min rebuild rebuild-min rebuild-all rebuild-all-min \
            clean clean-build install
 
 .DEFAULT_GOAL := all
+.PHONY: $(TARGETS)
 
 $(call mkdirs,$(BUILD_DIR) $(DIST_DIR) $(MIN_DIR) $(DEP_DIR))
 MKDIRS := $(call uniq,$(MKDIRS))
@@ -33,14 +33,6 @@ clean: clean-build
 
 clean-build:
 	$(call prefix,clean,$(RM) $(BUILD_DIR)/*)
-
-watch:
-	$(call prefix,build,-$(RESET_MAKE))
-	$(call prefix,watch,$(WATCH) '$(RESET_MAKE)')
-
-min-watch:
-	$(call prefix,build,-$(RESET_MAKE) min)
-	$(call prefix,watch,$(WATCH) '$(RESET_MAKE) min')
 
 install:
 	$(call prefix,install,npm install)

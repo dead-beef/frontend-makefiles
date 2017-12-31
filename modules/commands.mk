@@ -13,7 +13,6 @@ PRINTF = printf
 RESET_MAKE = env -u MAKELEVEL -u MAKEFILES $(MAKE)
 
 NODE = node
-WATCH = chokidar $(WATCH_FILES) -i '**/.*' -c
 
 MAKE_VARS = $(MAKEFILE_DIR)/bin/make-vars
 MAKE_VARS_CMD = $(MAKE_VARS) $(OVERRIDE_CONFIG_FILE)
