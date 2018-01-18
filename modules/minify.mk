@@ -8,16 +8,8 @@ MINCSS = csso -i $1 -o $2
 MINHTML = html-minifier -c config/html-minifier.conf.json $1 -o $2.tmp \
           && $(MV) $2.tmp $2
 
-define do-minify
-$(eval _distdir := $(dir $(strip $2)))
-
-$(call mkdirs, $(_distdir))
-
-min: $2
-
-$2: $1 | $(_distdir)
-	$$(call prefix,min,$$(call $3,$1,$2))
-endef
-
 # $(call minify, src_file, dst_file, command)
-minify = $(eval $(call do-minify,$1,$2,$3))
+minify = $(call build,$1,$2,min,$3)
+
+# $(call src-to-min, paths)
+src-to-min = $(patsubst %.js,%.min.js,$(patsubst %.css,%.min.css,$1))
