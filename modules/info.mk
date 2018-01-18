@@ -3,14 +3,14 @@ LIST_TARGETS := $(addprefix print-,$(TARGETS))
 LIST_NPM_SCRIPTS := $(addprefix print-,$(NPM_SCRIPTS))
 VARS += LIST_TARGETS LIST_NPM_SCRIPTS
 
-.PHONY: $(TARGETS) $(NPM_SCRIPTS) $(LIST_TARGETS) $(LIST_NPM_SCRIPTS) $(VARS) \
+.PHONY: $(TARGETS) $(NPM_SCRIPTS) $(LIST_TARGETS) $(LIST_NPM_SCRIPTS) \
         print-npm-header print-targets-header
 
-vars: $(VARS)
+vars: $(addprefix print-,$(VARS))
 targets: $(LIST_TARGETS) $(LIST_NPM_SCRIPTS)
 
-$(VARS):
-	@$(ECHO) "  " $@ = $($@)
+print-%:
+	@$(ECHO) '    ' $(@:print-%=%) = $($(@:print-%=%))
 
 $(LIST_TARGETS): print-targets-header
 	@$(ECHO) '    ' $(@:print-%=%)
