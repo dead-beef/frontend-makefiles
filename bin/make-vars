@@ -75,6 +75,7 @@ let jsDeps = getDeps(packageJson)
 
 console.log('NPM_SCRIPTS :=', scripts.join(' '));
 console.log('VENDOR_JS_FILES :=', jsDeps.join(' '));
+console.log('MODULE_PATH :=', module.paths.join(' '));
 
 for(let pack in packDir) {
 	console.log('RESOLVE_' + toMakeVar(pack), ':=', packDir[pack]);

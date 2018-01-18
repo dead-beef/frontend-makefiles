@@ -21,7 +21,6 @@ VARS_FILE := $(BUILD_DIR)/vars.mk
 MAKEFILES := Makefile $(VARS_FILE) $(wildcard $(MAKEFILE_PATH)/*.mk) \
              $(CONFIG_FILE)
 MODULE_DIRS := node_modules
-MODULE_PATH := $(shell $(NODE) -e 'console.log(module.paths.join(" "))')
 
 -include $(VARS_FILE)
 
