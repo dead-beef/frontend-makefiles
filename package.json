@@ -1,0 +1,19 @@
+{
+  "name": "frontend-makefiles",
+  "version": "0.1.0",
+  "author": "dead-beef",
+  "license": "MIT",
+  "private": true,
+  "description": "",
+  "main": "Makefile",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dead-beef/frontend-makefiles"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+  }
+}
