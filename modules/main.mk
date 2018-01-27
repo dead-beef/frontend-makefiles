@@ -1,5 +1,5 @@
 TARGETS += all min rebuild rebuild-min rebuild-all rebuild-all-min \
-           clean clean-build install
+           clean clean-build clean-vars install
 
 .DEFAULT_GOAL := all
 .PHONY: $(TARGETS)
@@ -33,6 +33,9 @@ clean: clean-build
 
 clean-build:
 	$(call prefix,clean,$(RM) $(BUILD_DIR)/*)
+
+clean-vars:
+	$(call prefix,clean,$(RM) $(VARS_FILE))
 
 install:
 	$(call prefix,install,npm install)
