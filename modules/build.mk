@@ -10,13 +10,30 @@
 #
 build = $(eval $(call do-build,$1,$2,$3,$4,$5,$6))
 
+# $(call build-files, src_files, src_dir, dst_dir,
+#                     [src_ext],
+#                     [dst_ext],
+#                     [build_command=COPY],
+#                     [lint_command=<none>],
+#                     [targets=all min]))
+build-files = $(eval $(call do-build-files,$1,$2,$3,$4,$5,$6,$7,$8))
+
+# $(call build-wildcards, wildcards, src_dir, dst_dir,
+#                         [src_ext],
+#                         [dst_ext],
+#                         [build_command=COPY],
+#                         [lint_command=<none>],
+#                         [targets=all min])
+build-wildcards = $(call build-files,$(call rwildcards,$2,$1),$2,$3,$4,$5,$6,$7,$8)
+
 # $(call copy-files, src_files, src_dir, dst_dir,
-#                    [targets=all min], [lint_command])
-copy-files = $(eval $(call do-copy-files,$1,$2,$3,$4,$5))
+#                    [lint_command=<none>], [targets=all min])
+copy-files = $(eval $(call do-build-files,$1,$2,$3, , ,COPY,$4,$5))
 
 # $(call copy-wildcards, wildcards, src_dir, dst_dir,
-#                        [targets=all min], [lint_command])
-copy-wildcards = $(call copy-files,$(call rwildcards,$2,$1),$2,$3,$4,$5)
+#                        [lint_command=<none>],
+#                        [targets=all min])
+copy-wildcards = $(call copy-files,$(call rwildcards,$2/,$1),$2,$3,$4,$5)
 
 # $(call build-and-minify, src_files, build_file, min_file
 #                          [build_command=CONCAT],
@@ -37,25 +54,30 @@ $(call build,$(2),$(3),$(5), , ,$(if $(strip $(9)),$(9),min))
 endef
 
 
-# $(eval $(call do-copy-files, src_files, src_dir, dst_dir,
-#                              [targets=all min], [lint_command]))
-define do-copy-files
+# $(eval $(call do-build-files, src_files, src_dir, dst_dir,
+#                               [src_ext], [dst_ext],
+#                               [build_command=COPY],
+#                               [lint_command=<none>],
+#                               [targets=all min]))
+define do-build-files
 $(eval _srcdir := $(strip $2))
-$(eval _distdir := $(strip $3))
-$(eval _distfiles := $(strip $(1:$(_srcdir)/%=$(_distdir)/%)))
-$(eval _distdirs := $(call get-dirs,$(_distfiles)))
+$(eval _dstdir := $(strip $3))
+$(eval _srcext := $(strip $4))
+$(eval _dstext := $(strip $5))
+$(eval _dstfiles := $(strip $(1:$(_srcdir)/%$(_srcext)=$(_dstdir)/%$(_dstext))))
+$(eval _dstdirs := $(call get-dirs,$(_dstfiles)))
 
-$(call mkdirs,$(_distdirs))
+$(call mkdirs,$(_dstdirs))
 
-$(if $(strip $4),$4,all min): $(_distfiles)
+$(if $(strip $8),$8,all min): $(_dstfiles)
 
-$(_distfiles): $(_distdir)/%: $(_srcdir)/% | $(_distdirs)
-ifneq "$(strip $5)" ""
+$(_dstfiles): $(_dstdir)/%$(_dstext): $(_srcdir)/%$(_srcext) | $(_dstdirs)
+ifneq "$(strip $7)" ""
 ifneq "$$(strip $$(LINT_ENABLED))" ""
-	$$(call prefix,lint,$$(call $5, $$<))
+	$$(call prefix,lint,$$(call $7, $$<))
 endif
 endif
-	$$(call prefix,copy,$$(CP) $$< $$@)
+	$$(call prefix,build,$$(call $(if $(strip $6),$6,COPY),$$<,$$@))
 endef
 
 # $(eval $(call do-build, src_files, dst_file,
