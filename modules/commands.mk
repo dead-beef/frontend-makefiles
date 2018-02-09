@@ -39,9 +39,11 @@ WATCH = chokidar $(1) -i '**/.*' -c $(2)
 ##
 # $(call <command>, input_files, output_file)
 
+COPY = $(CP) $(1) $(2)
 CONCAT = $(CAT) $(1) >$(2).tmp && $(MV) $(2).tmp $(2)
 SOURCE_MAP_CONCAT = source-map-concat -o $(2) $(1)
 NG1_TEMPLATE_CONCAT = ng1-template-concat -r $(TMPL_DIR) -o $(2) $(1)
+SLM = slm -i $(1) -o $(2)
 
 NODE_SASS = node-sass --include-path $(INCLUDE_PATH) \
             $(1) >$(2).tmp \

@@ -31,20 +31,20 @@ mkdirs = $(eval MKDIRS += $1)
 
 # $(call prefix, prefix, command)
 define prefix
-	@$(PRINTF) "  %-10s " "[$1]"
-	$(2)
+@$(PRINTF) "  %-10s " "[$1]"
+$(2)
 endef
 
 # $(call rwildcard, dir, wildcard)
 define rwildcard
-	$(sort $(wildcard $1$2)) \
-	$(foreach d,$(sort $(wildcard $1*)),$(call rwildcard,$d/,$2))
+$(sort $(wildcard $1$2)) \
+$(foreach d,$(sort $(wildcard $1*)),$(call rwildcard,$d/,$2))
 endef
 
 # $(call rwildcards, dir, wildcards)
 define rwildcards
-	$(sort $(foreach p,$2,$(wildcard $1$p))) \
-	$(foreach d,$(sort $(wildcard $1*)),$(call rwildcards,$d/,$2))
+$(sort $(foreach p,$2,$(wildcard $1$p))) \
+$(foreach d,$(sort $(wildcard $1*)),$(call rwildcards,$d/,$2))
 endef
 
 # $(call add-include-path, paths)
