@@ -17,13 +17,16 @@ VARS := MODULE_PATH VARS_FILE MAKEFILES TARGETS NPM_SCRIPTS
 VARS_FILE := $(BUILD_DIR)/vars.mk
 MAKEFILES := Makefile $(VARS_FILE) $(wildcard $(MAKEFILE_PATH)/*.mk)
 MODULE_DIRS := node_modules
+INSTALL_TOUCH := $(BUILD_DIR)/install.touch
 
 -include $(VARS_FILE)
 
 INCLUDE_PATH := $(call join-with,:,$(MODULE_PATH))
 
 ifneq "$(MAKECMDGOALS)" "install"
-$(VARS_FILE): package.json $(MAKE_VARS) $(OVERRIDE_CONFIG_FILE) | $(BUILD_DIR) $(MODULE_DIRS)
+ifneq "$(MAKECMDGOALS)" "clean"
+$(VARS_FILE): $(INSTALL_TOUCH) $(MAKE_VARS) $(OVERRIDE_CONFIG_FILE) | $(BUILD_DIR)
 	$(call prefix,vars,$(MAKE_VARS_CMD) >$@.tmp)
 	$(call prefix,vars,$(MV) $@.tmp $@)
+endif
 endif

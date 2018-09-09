@@ -11,6 +11,7 @@ LN = $(SHELLJS) ln -sfn
 CPDIST = $(SHELLJS) ln -f
 MKDIR = $(SHELLJS) mkdir -p
 ECHO = echo
+TOUCH = $(SHELLJS) touch
 
 PRINTF = printf
 RESET_MAKE = env -u MAKELEVEL -u MAKEFILES $(MAKE)

@@ -10,9 +10,6 @@ MKDIRS := $(call uniq,$(MKDIRS))
 $(MKDIRS):
 	$(call prefix,mkdirs,$(MKDIR) $@)
 
-$(MODULE_DIRS):
-	$(call prefix,install,$(RESET_MAKE) install)
-
 $(NPM_SCRIPTS):
 	$(call prefix,npm,npm run $(subst -,:,$@) --silent)
 
@@ -40,5 +37,10 @@ clean-vars:
 install:
 	$(call prefix,install,npm install)
 	$(call prefix,install,$(RESET_MAKE) $(VARS_FILE))
+
+$(INSTALL_TOUCH): package.json | $(BUILD_DIR)
+	$(call prefix,install,$(RESET_MAKE) clean)
+	$(call prefix,install,npm install)
+	$(call prefix,install,$(TOUCH) $@)
 
 -include $(wildcard $(DEP_DIR)/*.d)
