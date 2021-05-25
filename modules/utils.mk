@@ -1,5 +1,5 @@
-SPACE :=
-SPACE +=
+NOOP :=
+SPACE := $(NOOP) $(NOOP)
 LP := (
 RP := )
 COMMA := ,
